@@ -25,8 +25,8 @@ export const generateMetadata = async ({
       images: [
         {
           url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
-          height: 150,
-          width: 225,
+          height: 630,
+          width: 1200,
           alt: "The notes",
         },
       ],
