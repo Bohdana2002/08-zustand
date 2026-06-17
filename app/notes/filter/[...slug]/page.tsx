@@ -19,7 +19,7 @@ export const generateMetadata = async ({
   const tag = slug[0] === "all" ? "All notes" : slug[0];
   return {
     title: `${tag}`,
-    description: "Page of notes, now you see `${tag}`",
+    description: `Page of notes, now you see ${tag}`,
     openGraph: {
       title: `${tag}`,
       description: "Page of notes",
