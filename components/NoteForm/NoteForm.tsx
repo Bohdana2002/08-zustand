@@ -4,6 +4,7 @@ import { useId } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createNote } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { initialDraft, useNoteDraftStore } from "@/lib/store/noteStore";
 
 type TagsValues = "Todo" | "Work" | "Personal" | "Meeting" | "Shopping";
 
@@ -11,10 +12,23 @@ const NoteForm = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
+  const { draft, setDraft, clearDraft } = useNoteDraftStore();
+  const initialValues = draft ?? initialDraft;
+  const handleChange = (
+    event: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    setDraft({
+      ...draft,
+      [event.target.name]: event.target.value,
+    });
+  };
   const { mutate } = useMutation({
     mutationFn: createNote,
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
+      clearDraft();
       router.push("/notes/filter/all");
     },
   });
@@ -37,7 +51,9 @@ const NoteForm = () => {
           className={css.input}
           required
           minLength={3}
-          maxLength={50}
+          maxLength={500}
+          defaultValue={initialValues?.title}
+          onChange={handleChange}
         />
       </div>
       <div className={css.formGroup}>
@@ -48,11 +64,19 @@ const NoteForm = () => {
           rows={8}
           className={css.textarea}
           maxLength={50}
+          defaultValue={initialValues?.content}
+          onChange={handleChange}
         />
       </div>
       <div className={css.formGroup}>
         <label htmlFor={`${fieldId}-tag`}>Tag</label>
-        <select id={`${fieldId}-tag`} name="tag" className={css.select}>
+        <select
+          id={`${fieldId}-tag`}
+          name="tag"
+          className={css.select}
+          defaultValue={initialValues?.tag}
+          onChange={handleChange}
+        >
           <option value="Todo">Todo</option>
           <option value="Work">Work</option>
           <option value="Personal">Personal</option>
